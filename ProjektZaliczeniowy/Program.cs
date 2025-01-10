@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using ProjektZaliczeniowy.Data;
+
 namespace ProjektZaliczeniowy
 {
     public class Program
@@ -8,6 +12,8 @@ namespace ProjektZaliczeniowy
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WarehouseManagement")).ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning)));
 
             var app = builder.Build();
 
