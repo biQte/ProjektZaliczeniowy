@@ -1,0 +1,48 @@
+﻿@model ProjektZaliczeniowy.Models.Entities.Product
+
+@{
+    ViewData["title"] = "Dodaj produkt";
+}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Dodaj nowy produkt</h1>
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nazwa produktu</label>
+                <input type="text" class="form-control" id="name" name="name" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="ean" class="form-label">EAN</label>
+                <input type="text" min="13" max="13" class="form-control" id="ean" name="ean" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="sku" class="form-label">Numer katalogowy</label>
+                <input type="text" class="form-control" id="sku" name="sku" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="warehouseLocation" class="form-label">Pozycja magazynowa</label>
+                <input type="text" class="form-control" id="warehouseLocation" name="warehouseLocation" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+        </form>
+        @if (ViewBag.Error != null)
+        {
+            <p style="color: red;">@ViewBag.Error</p>
+        }
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

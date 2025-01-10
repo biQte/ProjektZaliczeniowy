@@ -1,0 +1,45 @@
+﻿@model ProjektZaliczeniowy.Models.Entities.Product
+
+@{
+    ViewData["title"] = "Edytuj produkt";
+}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Edytuj produkt</h1>
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="id" class="form-label">ID Produktu</label>
+                <input type="number" class="form-control" id="id" name="id" value="@ViewBag.ProductId" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Nazwa produktu</label>
+                <input type="text" class="form-control" id="name" name="name" value="@ViewBag.ProductName" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="warehouseLocation" class="form-label">Pozycja magazynowa</label>
+                <input type="text" class="form-control" id="warehouseLocation" name="warehouseLocation" value="@ViewBag.WarehouseLocation" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <p style="color: red;">@ViewBag.Error</p>
+        }
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

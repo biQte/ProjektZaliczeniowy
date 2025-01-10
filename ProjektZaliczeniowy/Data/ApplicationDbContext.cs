@@ -102,15 +102,15 @@ namespace ProjektZaliczeniowy.Data
                 entity.Property(u => u.CreatedAt).HasDefaultValueSql("GETDATE()");
             });
 
-            modelBuilder.Entity<User>().HasData(new User
-            {
-                Id = 1,
-                Username = "admin",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("DefaultPassword123"),
-                Role = "Admin",
-                IsActive = true,
-                CreatedAt = DateTime.Now
-            });
+            //modelBuilder.Entity<User>().HasData(new User
+            //{
+            //    Id = 1,
+            //    Username = "admin",
+            //    PasswordHash = BCrypt.Net.BCrypt.HashPassword("DefaultPassword123"),
+            //    Role = "Admin",
+            //    IsActive = true,
+            //    CreatedAt = DateTime.Now
+            //});
         }
     }
 }

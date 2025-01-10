@@ -1,0 +1,49 @@
+﻿@{
+    Layout = null;
+    ViewData["title"] = "Pierwsze uruchomienie";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .note {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>@ViewBag.Message</h1>
+        <p><strong>Login:</strong> @ViewBag.Username</p>
+        <p><strong>Hasło:</strong> @ViewBag.Password</p>
+        <p class="note">@ViewBag.Note</p>
+        <p>Po zapisaniu danych należy odświeżyć stronę</p>
+    </div>
+</body>
+</html>

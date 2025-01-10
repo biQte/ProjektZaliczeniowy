@@ -15,6 +15,15 @@ namespace ProjektZaliczeniowy
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WarehouseManagement")).ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning)));
 
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                });
+
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -25,6 +34,8 @@ namespace ProjektZaliczeniowy
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
