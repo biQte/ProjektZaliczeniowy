@@ -4,6 +4,7 @@ using ProjektZaliczeniowy.Data;
 using ProjektZaliczeniowy.Models;
 using ProjektZaliczeniowy.Models.Entities;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -154,6 +155,294 @@ namespace ProjektZaliczeniowy.Controllers
             return RedirectToAction("Products");
         }
 
+        public async Task<IActionResult> ExternalIssues()
+        {
+            var externalIssues = await _dbContext.ExternalIssues.Include(e => e.User).Include(e => e.Details).ToListAsync();
+            return View(externalIssues);
+        }
+
+        public async Task<IActionResult> CreateExternalIssue()
+        {
+            var products = await _dbContext.Products.ToListAsync();
+            ViewBag.Products = products;
+            return View(products);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateExternalIssue(string remarks, List<int> productIds, List<decimal> quantities)
+        {
+            if(productIds == null || productIds.Count == 0 || quantities == null || quantities.Count == 0)
+            {
+                ViewBag.Error = "Nale¿y wybraæ produkty i podaæ iloœci.";
+                return View();
+            }
+
+            var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Nie mo¿na zidentyfikowaæ u¿ytkownika.");
+            }
+
+            var externalIssue = new ExternalIssue
+            {
+                Date = DateTime.UtcNow,
+                Remarks = remarks,
+                UserId = int.Parse(userId),
+                Details = productIds.Select((productId, index) => new ExternalIssueDetail
+                {
+                    ProductId = productId,
+                    Quantity = quantities[index]
+                }).ToList(),
+            };
+
+            _dbContext.ExternalIssues.Add(externalIssue);
+            foreach (var detail in externalIssue.Details)
+            {
+                var product = await _dbContext.Products.FindAsync(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock += detail.Quantity;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("ExternalIssues");
+        }
+
+        public async Task<IActionResult> ExternalIssueDetails(int id)
+        {
+            var externalIssue = await _dbContext.ExternalIssues.Include(e => e.User).Include(e => e.Details).ThenInclude(d => d.Product).FirstOrDefaultAsync(e => e.Id == id);
+
+            return View(externalIssue);
+        }
+
+        public async Task<IActionResult> InternalIssues()
+        {
+            var internalIssues = await _dbContext.InternalIssues.Include(i => i.User).Include(i => i.Details).ToListAsync();
+            return View(internalIssues);
+        }
+
+        public async Task<IActionResult> CreateInternalIssue()
+        {
+            var products = await _dbContext.Products.ToListAsync();
+            ViewBag.Products = products;
+            return View(products);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateInternalIssue(string remarks, List<int> productIds, List<decimal> quantities)
+        {
+            if (productIds == null || productIds.Count == 0 || quantities == null || quantities.Count == 0)
+            {
+                ViewBag.Error = "Nale¿y wybraæ produkty i podaæ iloœci.";
+                return View();
+            }
+
+            var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Nie mo¿na zidentyfikowaæ u¿ytkownika.");
+            }
+
+            var internalIssue = new InternalIssue
+            {
+                Date = DateTime.UtcNow,
+                Remarks = remarks,
+                UserId = int.Parse(userId),
+                Details = productIds.Select((productId, index) => new InternalIssueDetail
+                {
+                    ProductId = productId,
+                    Quantity = quantities[index]
+                }).ToList(),
+            };
+
+            _dbContext.InternalIssues.Add(internalIssue);
+            foreach (var detail in internalIssue.Details)
+            {
+                var product = await _dbContext.Products.FindAsync(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock += detail.Quantity;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("InternalIssues");
+        }
+
+        public async Task<IActionResult> InternalIssueDetails(int id)
+        {
+            var internalIssue = await _dbContext.InternalIssues.Include(i => i.User).Include(i => i.Details).ThenInclude(d => d.Product).FirstOrDefaultAsync(i => i.Id == id);
+
+            return View(internalIssue);
+        }
+
+        public async Task<IActionResult> ExternalReceipts()
+        {
+            var externalReceipts = await _dbContext.ExternalReceipts.Include(i => i.User).Include(i => i.Details).ToListAsync();
+            return View(externalReceipts);
+        }
+
+        public async Task<IActionResult> CreateExternalReceipt()
+        {
+            var products = await _dbContext.Products.ToListAsync();
+            ViewBag.Products = products;
+            return View(products);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateExternalReceipt(string remarks, List<int> productIds, List<decimal> quantities)
+        {
+            if (productIds == null || productIds.Count == 0 || quantities == null || quantities.Count == 0)
+            {
+                ViewBag.Error = "Nale¿y wybraæ produkty i podaæ iloœci.";
+                return View();
+            }
+
+            var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Nie mo¿na zidentyfikowaæ u¿ytkownika.");
+            }
+
+            var externalReceipt = new ExternalReceipt
+            {
+                Date = DateTime.UtcNow,
+                Remarks = remarks,
+                UserId = int.Parse(userId),
+                Details = productIds.Select((productId, index) => new ExternalReceiptDetail
+                {
+                    ProductId = productId,
+                    Quantity = quantities[index]
+                }).ToList(),
+            };
+
+            _dbContext.ExternalReceipts.Add(externalReceipt);
+            foreach (var detail in externalReceipt.Details)
+            {
+                var product = await _dbContext.Products.FindAsync(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock -= detail.Quantity;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("ExternalReceipts");
+        }
+
+        public async Task<IActionResult> ExternalReceiptDetails(int id)
+        {
+            var externalReceipt = await _dbContext.ExternalReceipts.Include(i => i.User).Include(i => i.Details).ThenInclude(d => d.Product).FirstOrDefaultAsync(i => i.Id == id);
+
+            return View(externalReceipt);
+        }
+
+        public async Task<IActionResult> InternalReceipts()
+        {
+            var internalReceipts = await _dbContext.InternalReceipts.Include(i => i.User).Include(i => i.Details).ToListAsync();
+            return View(internalReceipts);
+        }
+
+        public async Task<IActionResult> CreateInternalReceipt()
+        {
+            var products = await _dbContext.Products.ToListAsync();
+            ViewBag.Products = products;
+            return View(products);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateInternalReceipt(string remarks, List<int> productIds, List<decimal> quantities)
+        {
+            if (productIds == null || productIds.Count == 0 || quantities == null || quantities.Count == 0)
+            {
+                ViewBag.Error = "Nale¿y wybraæ produkty i podaæ iloœci.";
+                return View();
+            }
+
+            var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Nie mo¿na zidentyfikowaæ u¿ytkownika.");
+            }
+
+            var internalReceipt = new InternalReceipt
+            {
+                Date = DateTime.UtcNow,
+                Remarks = remarks,
+                UserId = int.Parse(userId),
+                Details = productIds.Select((productId, index) => new InternalReceiptDetail
+                {
+                    ProductId = productId,
+                    Quantity = quantities[index]
+                }).ToList(),
+            };
+
+            _dbContext.InternalReceipts.Add(internalReceipt);
+            foreach (var detail in internalReceipt.Details)
+            {
+                var product = await _dbContext.Products.FindAsync(detail.ProductId);
+                if (product != null)
+                {
+                    product.QuantityInStock -= detail.Quantity;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("InternalReceipts");
+        }
+
+        public async Task<IActionResult> InternalReceiptDetails(int id)
+        {
+            var internalReceipt = await _dbContext.InternalReceipts.Include(i => i.User).Include(i => i.Details).ThenInclude(d => d.Product).FirstOrDefaultAsync(i => i.Id == id);
+
+            return View(internalReceipt);
+        }
+
+        public async Task<IActionResult> Users()
+        {
+            var users = await _dbContext.Users.ToListAsync();
+            return View(users);
+        }
+
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(string username, string password, string role)
+        {
+            if (username == null || password == null || role == null) { 
+              ViewBag.Error = "Wszystkie pola s¹ wymagane.";
+                return View();
+            }
+
+            if (_dbContext.Users.Any(u => u.Username == username))
+            {
+                ViewBag.Error = "U¿ytkownik o podanej nazwie ju¿ istnieje.";
+                return View();
+            }
+
+            var user = new User
+            {
+                Username = username,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                Role = role,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _dbContext.Users.Add(user);
+
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("Users");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Nowe przyjęcie wewnętrzne";
+}
+
+<div class="container mt-5">
+    <h1>Nowe przyjęcie wewnętrzne</h1>
+
+    @if (ViewBag.Error != null)
+    {
+        <p style="color: red;">@ViewBag.Error</p>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="remarks" class="form-label">Uwagi (np. Numer partii produkcyjnej)</label>
+            <textarea class="form-control" id="remarks" name="remarks" rows="3" required></textarea>
+        </div>
+
+        <h3>Produkty</h3>
+        <div id="products">
+            <div class="mb-3 d-flex">
+                <select name="productIds" class="form-control me-3">
+                    @foreach (var product in ViewBag.Products)
+                    {
+                        <option value="@product.Id">@product.Name</option>
+                    }
+                </select>
+                <input type="number" name="quantities" class="form-control me-3" placeholder="Ilość" required />
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Usuń</button>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="addProduct()">Dodaj produkt</button>
+        <hr />
+        <button type="submit" class="btn btn-primary">Zapisz przyjęcie</button>
+    </form>
+</div>
+
+<script>
+    function addProduct() {
+        const container = document.getElementById("products");
+        const html = `
+                    <div class="mb-3 d-flex">
+                        <select name="productIds" class="form-control me-3">
+                            ${document.querySelector("select[name='productIds']").innerHTML}
+                        </select>
+                        <input type="number" name="quantities" class="form-control me-3" placeholder="Ilość" required />
+                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Usuń</button>
+                    </div>`;
+        container.insertAdjacentHTML("beforeend", html);
+    }
+</script>

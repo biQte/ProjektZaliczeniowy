@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Przyjęcia zewnętrzne";
+}
+
+<div class="container mt-5">
+    <h1>Lista przyjęć zewnętrznych</h1>
+    <a href="@Url.Action("CreateExternalIssue", "Home")" class="btn btn-primary mb-3">Nowe przyjęcie zewnętrzne</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Numer przyjęcia</th>
+                <th>Ilość produktów</th>
+                <th>Data przyjęcia</th>
+                <th>Wprowadzający</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var issue in Model)
+            {
+                <tr>
+                    <td>@issue.Id</td>
+                    <td>@issue.Details.Count</td>
+                    <td>@issue.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@issue.User.Username</td>
+                    <td>
+                        <a href="@Url.Action("ExternalIssueDetails", "Home", new { id = issue.Id })" class="btn btn-info">Zobacz szczegóły</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

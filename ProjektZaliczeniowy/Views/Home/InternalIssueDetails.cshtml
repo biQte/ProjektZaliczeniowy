@@ -1,0 +1,31 @@
+﻿@model ProjektZaliczeniowy.Models.Entities.InternalIssue
+
+@{
+    ViewData["Title"] = "Szczegóły przyjęcia wewnętrznego";
+}
+
+<div class="container mt-5">
+    <h1>Szczegóły przyjęcia wewnętrznego nr @Model.Id</h1>
+    <p>Data przyjęcia: @Model.Date.ToString("yyyy-MM-dd HH:mm")</p>
+    <p>Wprowadzający: @Model.User.Username</p>
+    <p>Uwagi: @Model.Remarks</p>
+    <hr />
+    <h3>Produkty</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nazwa produktu</th>
+                <th>Ilość</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.Details)
+            {
+                <tr>
+                    <td>@detail.Product.Name</td>
+                    <td>@detail.Quantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

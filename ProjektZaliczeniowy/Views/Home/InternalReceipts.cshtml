@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Rozchody wewnętrzne";
+}
+
+<div class="container mt-5">
+    <h1>Lista wydań zewnętrznych</h1>
+    <a href="@Url.Action("CreateInternalReceipt", "Home")" class="btn btn-primary mb-3">Nowy rozchód wewnętrzny</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Numer rozchodu</th>
+                <th>Ilość produktów</th>
+                <th>Data rozchodu</th>
+                <th>Wprowadzający</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var receipt in Model)
+            {
+                <tr>
+                    <td>@receipt.Id</td>
+                    <td>@receipt.Details.Count</td>
+                    <td>@receipt.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@receipt.User.Username</td>
+                    <td>
+                        <a href="@Url.Action("InternalReceiptDetails", "Home", new { id = receipt.Id })" class="btn btn-info">Zobacz szczegóły</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
